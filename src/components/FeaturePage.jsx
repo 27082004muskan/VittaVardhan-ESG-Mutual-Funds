@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { FaLeaf, FaMoneyBillWave, FaNewspaper, FaUsers, FaCalculator, FaGavel } from "react-icons/fa";
-import ImpactCalculator from "../ImpactCalculator";
+import ImpactCalculator from "./ImpactCalculator";
 // import SustainabilityScore from "./components/SustainabilityScore";
-import GreenNews from '../GreenNews';
-import GreenMutualFund from '../GreenMutualFund';
-import GreenFundSearch from '../GreenFundSearch';
-import ESGEducation from '../ESGEducation';
+import GreenNews from './GreenNews';
+import GreenMutualFund from './GreenMutualFund';
+import GreenFundSearch from './GreenFundSearch';
+import ESGEducation from './ESGEducation';
 import { useNavigate } from 'react-router-dom';
-import RewardsPage from "../rewards";
+import RewardsPage from "./rewards";
 
 const features = [
   // { name: "Sustainability Score System", icon: <FaLeaf />, component: <SustainabilityScore /> },

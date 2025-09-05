@@ -1,4 +1,3 @@
-
 import {
   TrendingUp,
   Scale,
@@ -72,7 +71,7 @@ const FeaturesSection = () => {
   ];
 
   return (
-    <section className="relative w-full bg-gray-800 overflow-hidden mt-24 md:mt-32">
+    <section className="relative w-full bg-gray-800 overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,#1a472a,#111827_60%)]"/>
       <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 md:py-24">
         <div className="text-center mb-16 sm:mb-20">

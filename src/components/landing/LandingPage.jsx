@@ -1,4 +1,4 @@
-import { Moon } from "lucide-react";
+import { Mail } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
 import AboutUs from "./About";
@@ -70,12 +70,14 @@ const LandingPage = () => {
             </a>
 
           </div>
-          <button
-            className="p-2 rounded-full hover:bg-gray-700/50 transition-all 
-                            duration-300 backdrop-blur-sm"
-          >
-            <Moon className="w-5 h-5" />
-          </button>
+<button
+  onClick={() => window.location.href = 'mailto:contact@greenvest.com'}
+  className="p-2 rounded-full hover:bg-gray-700/50 transition-all 
+             duration-300 backdrop-blur-sm"
+  title="Contact Us"
+>
+  <Mail className="w-5 h-5" />
+</button>
         </div>
       </nav>
 
