@@ -48,7 +48,7 @@
 // }
 
 // export default Footer
-import React from "react";
+
 import { FaTwitter, FaFacebook, FaInstagram, FaLinkedin } from "react-icons/fa6"; // Use fa6 for FontAwesome 6
 
 const Footer = () => {
