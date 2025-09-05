@@ -1,6 +1,6 @@
 
-import { FaCheck } from 'react-icons/fa';
-import { HiMail } from 'react-icons/hi';
+
+
 
 const Working = () => {
   return (
@@ -49,7 +49,7 @@ const Working = () => {
 </section>
 
       {/* Pricing Plans Section */}
-      <section className="w-full py-20 bg-gray-900">
+      {/* <section className="w-full py-20 bg-gray-900">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 
                          bg-gradient-to-r from-green-400 to-green-600 
@@ -125,38 +125,9 @@ const Working = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
-      {/* Newsletter Section */}
-      <section className="w-full py-20 bg-gray-900">
-        <div className="container mx-auto px-4 max-w-4xl">
-          <div className="bg-gray-800 rounded-2xl p-8 md:p-12 border border-gray-700 
-                         hover:border-green-500/50 transition-all duration-300">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 
-                            bg-gradient-to-r from-green-400 to-green-600 
-                            bg-clip-text text-transparent">
-                Stay Updated
-              </h2>
-              <p className="text-gray-300">Get the latest insights on sustainable investing directly in your inbox.</p>
-            </div>
-            <div className="flex flex-col md:flex-row gap-4 max-w-xl mx-auto">
-              <input 
-                type="email" 
-                placeholder="Enter your email" 
-                className="flex-1 px-4 py-3 rounded-lg bg-gray-300 border border-gray-700 
-                           focus:outline-none focus:border-green-500 transition-all duration-300"
-              />
-              <button className="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-lg 
-                                font-semibold transition-all duration-300 flex items-center 
-                                justify-center gap-2 hover:shadow-lg hover:shadow-green-500/20">
-                Subscribe
-                <HiMail className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
+
     </div>
   );
 };

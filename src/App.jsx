@@ -1,15 +1,13 @@
 // App.jsx
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import LandingPage from './LandingPage';
-import Footer from './Footer';
-import FeaturePage from './FeaturePage';
-import Login from './components/auth/Login';
-import Signup from './components/auth/Signup';
-import ProtectedRoute from './components/auth/ProtectedRoute';
-import GreenFundSearch from './components/GreenFundSearch';
-import TransactionPage from './components/TransactionPage'; // Import TransactionPage
-import RewardsPage from './components/rewards';
-import RedemptionScreen from './components/Redeem'; // Import RedemptionScreenimport RedemptionScreen from './RedemptionScreen'; // Import RedemptionScreen
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import FeaturePage from "./components/landing/FeaturePage";
+import GreenFundSearch from "./components/GreenFundSearch";
+import RedemptionScreen from "./components/Redeem"; // Import RedemptionScreenimport RedemptionScreen from './RedemptionScreen'; // Import RedemptionScreen
+import TransactionPage from "./components/TransactionPage"; // Import TransactionPage
+import Login from "./components/auth/Login";
+import Signup from "./components/auth/Signup";
+import LandingPage from "./components/landing/LandingPage";
+import RewardsPage from "./components/rewards";
 
 function App() {
   return (
@@ -28,9 +26,12 @@ function App() {
             }
           />
           <Route path="/green-funds" element={<GreenFundSearch />} />
-          <Route path="/transaction" element={<TransactionPage />} /> {/* Add this route */}
-          <Route path="/rewards" element={<RewardsPage />} /> {/* New rewards route */}
-          <Route path="/redeem/:rewardId" element={<RedemptionScreen />} /> {/* New redemption route */}
+          <Route path="/transaction" element={<TransactionPage />} />{" "}
+          {/* Add this route */}
+          <Route path="/rewards" element={<RewardsPage />} />{" "}
+          {/* New rewards route */}
+          <Route path="/redeem/:rewardId" element={<RedemptionScreen />} />{" "}
+          {/* New redemption route */}
         </Routes>
       </div>
     </Router>

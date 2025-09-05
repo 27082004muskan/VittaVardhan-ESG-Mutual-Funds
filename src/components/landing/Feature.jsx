@@ -1,4 +1,4 @@
-import React from 'react';
+
 import {
   TrendingUp,
   Scale,
@@ -8,6 +8,7 @@ import {
   Target
 } from 'lucide-react';
 
+// eslint-disable-next-line react/prop-types
 const FeatureCard = ({ title, description, icon: Icon }) => (
   <div className="p-8 border border-gray-700/50 rounded-xl bg-gray-900/90 shadow-lg 
                   hover:shadow-2xl transition-all duration-500 hover:scale-102 
