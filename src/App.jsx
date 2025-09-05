@@ -1,8 +1,8 @@
 // App.jsx
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import FeaturePage from "./components/landing/FeaturePage";
+import FeaturePage from "./components/FeaturePage";
 import GreenFundSearch from "./components/GreenFundSearch";
-import RedemptionScreen from "./components/Redeem"; // Import RedemptionScreenimport RedemptionScreen from './RedemptionScreen'; // Import RedemptionScreen
+import RedemptionScreen from "./components/Redeem"; 
 import TransactionPage from "./components/TransactionPage"; // Import TransactionPage
 import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
