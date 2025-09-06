@@ -15,7 +15,7 @@ const TransactionPage = () => {
       <div className="p-6 text-center">
         <h2 className="text-2xl text-gray-700 mb-4">No fund selected. Please go back and select a fund.</h2>
         <button 
-          onClick={() => navigate('/')}
+          onClick={() => navigate(-1)} // ✅ FIXED: Changed from '/features' to navigate(-1)
           className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors"
         >
           Back to Funds
@@ -26,7 +26,7 @@ const TransactionPage = () => {
 
   const handleTransaction = (e) => {
     e.preventDefault();
-    const units = (parseFloat(amount) / 10).toFixed(2); // Dummy calculation
+    const units = (parseFloat(amount) / 10).toFixed(2);
     const newTransaction = {
       fund: fund.schemeName,
       amount: parseFloat(amount),
@@ -39,10 +39,11 @@ const TransactionPage = () => {
   };
 
   const styles = {
+    // ... all your existing styles remain the same
     pageWrapper: {
       minHeight: '100vh',
       width: '100%',
-      backgroundColor: '#111827', // Dark background to match landing page
+      backgroundColor: '#111827',
       position: 'fixed',
       top: 0,
       left: 0,
@@ -203,7 +204,7 @@ const TransactionPage = () => {
                 </div>
               </div>
               <button 
-                onClick={() => navigate('/')}
+                onClick={() => navigate(-1)} // ✅ This one was already correct
                 style={{
                   ...styles.button,
                   display: 'inline-flex',
@@ -211,7 +212,7 @@ const TransactionPage = () => {
                   gap: '8px'
                 }}
               >
-                <FaLeaf /> View All Funds
+                <FaLeaf /> Back to Green Funds
               </button>
             </div>
           </div>
@@ -225,10 +226,10 @@ const TransactionPage = () => {
       <div style={styles.container}>
         <div style={styles.header}>
           <button 
-            onClick={() => navigate('/')}
+            onClick={() => navigate(-1)} // ✅ FIXED: Changed from navigate('/') to navigate(-1)
             style={styles.backButton}
           >
-            <FaArrowLeft /> Back to Funds
+            <FaArrowLeft /> Back to Green Funds
           </button>
         </div>
 
@@ -285,4 +286,4 @@ const TransactionPage = () => {
   );
 };
 
-export default TransactionPage; 
+export default TransactionPage;

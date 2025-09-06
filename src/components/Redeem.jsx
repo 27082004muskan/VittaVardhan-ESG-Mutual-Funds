@@ -16,7 +16,7 @@ const RedemptionScreen = () => {
         <div className="text-center">
           <h2 className="text-2xl text-red-500 mb-4">Error: No reward selected.</h2>
           <button
-            onClick={() => navigate('/rewards')}
+            onClick={() => navigate(-1)}
             className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2 mx-auto"
           >
             <FaArrowLeft /> Back to Rewards
@@ -54,13 +54,13 @@ const RedemptionScreen = () => {
         {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button
-            onClick={() => navigate('/rewards')}
+            onClick={() => navigate(-1)}
             className="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-500 transition-colors flex items-center gap-2"
           >
             <FaArrowLeft /> Back to Rewards
           </button>
           <button
-            onClick={() => navigate('/green-funds')}
+            onClick={() => navigate('/features')}
             className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
           >
             <FaLeaf /> Explore More ESG Funds

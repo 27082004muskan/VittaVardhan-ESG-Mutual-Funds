@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaLeaf, FaMoneyBillWave, FaNewspaper, FaUsers, FaCalculator, FaGavel } from "react-icons/fa";
+import { FaLeaf, FaMoneyBillWave, FaNewspaper, FaUsers, FaCalculator, FaGavel, FaBars, FaTimes } from "react-icons/fa";
 import ImpactCalculator from "./ImpactCalculator";
 // import SustainabilityScore from "./components/SustainabilityScore";
 import GreenNews from './GreenNews';
@@ -10,7 +10,6 @@ import { useNavigate } from 'react-router-dom';
 import RewardsPage from "./rewards";
 
 const features = [
-  // { name: "Sustainability Score System", icon: <FaLeaf />, component: <SustainabilityScore /> },
   { name: "ESG Investment Guide", icon: <FaLeaf />, component: <ESGEducation /> },
   { name: "Green Mutual Fund", icon: <FaGavel />, component: <GreenFundSearch /> },
   { name: "ESG Funds Explorer", icon: <FaMoneyBillWave />, component: <GreenMutualFund /> },
@@ -21,6 +20,7 @@ const features = [
 
 const FeaturePage = () => {
   const [selectedFeature, setSelectedFeature] = useState(features[0]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -28,19 +28,47 @@ const FeaturePage = () => {
     navigate('/login');
   };
 
+  const handleFeatureSelect = (feature) => {
+    setSelectedFeature(feature);
+    setIsSidebarOpen(false); // Close sidebar on mobile after selection
+  };
+
   return (
-    <div className="flex h-screen bg-gray-900 text-white">
+    <div className="flex h-screen bg-gray-900 text-white relative">
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-gray-700 hover:bg-gray-600 
+                   rounded-lg transition-colors duration-300"
+      >
+        {isSidebarOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
+      </button>
+
+      {/* Mobile Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <div className="w-1/4 bg-gray-800 p-6 space-y-4">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Features</h2>
+      <div className={`
+        fixed md:relative top-0 left-0 h-full z-40
+        w-80 md:w-1/4 bg-gray-800 p-6 space-y-4
+        transform transition-transform duration-300 ease-in-out
+        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+      `}>
+        <div className="flex justify-between items-center mb-4 pt-12 md:pt-0">
+          <h2 className="text-xl md:text-2xl font-bold">Features</h2>
           <button
             onClick={handleLogout}
-            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg 
-                     transition-colors duration-300 flex items-center gap-2"
+            className="px-3 py-2 md:px-4 md:py-2 bg-red-500 hover:bg-red-600 
+                     text-white rounded-lg transition-colors duration-300 
+                     flex items-center gap-2 text-sm md:text-base"
           >
             <svg 
-              className="w-4 h-4" 
+              className="w-3 h-3 md:w-4 md:h-4" 
               fill="none" 
               stroke="currentColor" 
               viewBox="0 0 24 24"
@@ -52,36 +80,44 @@ const FeaturePage = () => {
                 d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" 
               />
             </svg>
-            Logout
+            <span className="hidden sm:inline">Logout</span>
           </button>
         </div>
-        <ul className="space-y-2">
+        
+        <ul className="space-y-2 overflow-y-auto max-h-[calc(100vh-120px)]">
           {features.map((feature) => (
             <li
               key={feature.name}
-              className={`flex items-center space-x-2 p-3 rounded-lg cursor-pointer transition-all ${
-                selectedFeature.name === feature.name ? "bg-green-500 text-gray-900" : "hover:bg-gray-700"
+              className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer 
+                         transition-all text-sm md:text-base ${
+                selectedFeature.name === feature.name 
+                  ? "bg-green-500 text-gray-900" 
+                  : "hover:bg-gray-700"
               }`}
-              onClick={() => setSelectedFeature(feature)}
+              onClick={() => handleFeatureSelect(feature)}
             >
-              <span className="text-lg">{feature.icon}</span>
-              <span>{feature.name}</span>
+              <span className="text-base md:text-lg flex-shrink-0">{feature.icon}</span>
+              <span className="truncate">{feature.name}</span>
             </li>
           ))}
         </ul>
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 p-8 overflow-y-auto">
-        {selectedFeature.component ? (
-          React.cloneElement(selectedFeature.component, { 
-            onFeatureSelect: setSelectedFeature 
-          })
-        ) : (
-          <div className="flex items-center justify-center h-full">
-            <h1 className="text-4xl font-semibold">{selectedFeature.name}</h1>
-          </div>
-        )}
+      <div className="flex-1 p-4 md:p-8 overflow-y-auto">
+        <div className="pt-16 md:pt-0">
+          {selectedFeature.component ? (
+            React.cloneElement(selectedFeature.component, { 
+              onFeatureSelect: setSelectedFeature 
+            })
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <h1 className="text-2xl md:text-4xl font-semibold text-center px-4">
+                {selectedFeature.name}
+              </h1>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

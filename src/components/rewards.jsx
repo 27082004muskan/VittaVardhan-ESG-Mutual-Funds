@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { FaCoins, FaGift, FaQuestionCircle, FaArrowLeft, FaLeaf } from 'react-icons/fa';
+import { FaCoins, FaGift, FaQuestionCircle, FaLeaf } from 'react-icons/fa';
 
 const RewardsPage = () => {
   const navigate = useNavigate();
@@ -22,12 +22,7 @@ const RewardsPage = () => {
       <div className="max-w-6xl mx-auto p-6">
         {/* Header */}
         <header className="flex items-center justify-between mb-8">
-          <button
-            onClick={() => navigate('/green-funds')}
-            className="flex items-center gap-2 text-green-500 hover:text-green-400 transition-colors"
-          >
-            <FaArrowLeft /> Back to ESG Funds
-          </button>
+   
           <h1 className="text-3xl font-bold text-green-500 flex items-center gap-2">
             <FaLeaf /> GreenCoins Rewards
           </h1>
@@ -41,10 +36,10 @@ const RewardsPage = () => {
             Invest in ESG mutual funds and earn GreenCoins to unlock exclusive rewards. Support sustainability while enjoying discounts, premium tools, and eco-friendly perks!
           </p>
           <button
-            onClick={() => navigate('/green-funds')}
+            // onClick={() => navigate('/green-funds')}
             className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors"
           >
-            Explore ESG Funds
+            Collect your Rewards
           </button>
         </section>
 
