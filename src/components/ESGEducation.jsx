@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { FaSearch, FaChartLine, FaNewspaper, FaLeaf, FaChartPie, FaGraduationCap } from 'react-icons/fa';
 
 const ESGEducation = () => {
@@ -194,7 +194,7 @@ const ESGEducation = () => {
             <div className="mb-6">
               <h3 className="text-green-500 text-lg font-medium mb-3">Start Small, Think Big</h3>
               <p className="text-gray-300 mb-4">
-                You don't need large amounts of capital to make a difference. Even investing just 2% of your income in green funds can create significant positive impact over time.
+                You don&apos;t need large amounts of capital to make a difference. Even investing just 2% of your income in green funds can create significant positive impact over time.
               </p>
             </div>
 
