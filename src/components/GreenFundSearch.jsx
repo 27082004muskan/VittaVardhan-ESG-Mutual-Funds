@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaSearch, FaLeaf, FaChartLine, FaInfoCircle, FaExclamationCircle } from 'react-icons/fa';
+import { FaSearch, FaLeaf, FaChartLine, FaExclamationCircle } from 'react-icons/fa';
 import '../styles/GreenFundSearch.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -44,35 +44,26 @@ const GreenFundSearch = () => {
         const fundsArray = Array.isArray(response.data) ? response.data : 
                          Array.isArray(response.data.data) ? response.data.data : [];
         
-        // Let's log a sample fund to see available fields
         console.log("Sample Fund Data:", fundsArray[0]);
         
         const greenFunds = fundsArray.filter(fund => {
           const name = fund.schemeName?.toLowerCase() || '';
           return (
-            // Environmental funds
             name.includes('environmental') ||
             name.includes('green energy') || 
             name.includes('clean energy') ||
             name.includes('eco') ||
-            
-            // Social funds
             name.includes('social') || 
             name.includes('community') ||
             name.includes('diversity') ||
             name.includes('inclusion') ||
-            
-            // Governance funds
             name.includes('governance') ||
             name.includes('ethical') ||
             name.includes('responsible investing') ||
-            
-            // Combined ESG
             name.includes('esg')
           );
         });
 
-        // Log filtered funds to see what we're working with
         console.log("Filtered Funds:", greenFunds.length);
         if (greenFunds.length > 0) {
           console.log("Sample Green Fund:", greenFunds[0]);
@@ -94,13 +85,6 @@ const GreenFundSearch = () => {
     setFilters(prev => ({
       ...prev,
       [category]: !prev[category]
-    }));
-  };
-
-  const handleFilterChange = (filter, value) => {
-    setFilters(prev => ({
-      ...prev,
-      [filter]: value
     }));
   };
 
@@ -151,7 +135,12 @@ const GreenFundSearch = () => {
       color: '#f3f4f6',
       overflowY: 'auto',
       position: 'relative',
-      padding: '40px 20px'
+      // ✅ UPDATED: Mobile-responsive padding
+      padding: window.innerWidth <= 768 ? '10px 20px' : '40px 20px',
+      // Alternative approach using CSS-in-JS for responsive design
+      // '@media (max-width: 768px)': {
+      //   padding: '10px 15px'
+      // }
     },
     container: {
       width: '100%',
@@ -161,7 +150,8 @@ const GreenFundSearch = () => {
       marginBottom: '20px'
     },
     title: {
-      fontSize: '2.5rem',
+      // ✅ UPDATED: Responsive font size
+      fontSize: window.innerWidth <= 768 ? '1.8rem' : '2.5rem',
       color: '#10b981',
       marginBottom: '16px',
       display: 'flex',
@@ -170,7 +160,8 @@ const GreenFundSearch = () => {
     },
     subtitle: {
       color: '#d1d5db',
-      fontSize: '1.1rem'
+      // ✅ UPDATED: Responsive font size
+      fontSize: window.innerWidth <= 768 ? '0.95rem' : '1.1rem'
     },
     searchContainer: {
       position: 'relative',
@@ -179,7 +170,8 @@ const GreenFundSearch = () => {
     },
     searchInput: {
       width: '100%',
-      padding: '16px 48px',
+      // ✅ UPDATED: Responsive padding
+      padding: window.innerWidth <= 768 ? '12px 44px' : '16px 48px',
       fontSize: '1.1rem',
       backgroundColor: '#1f2937',
       border: '2px solid #374151',
@@ -193,15 +185,18 @@ const GreenFundSearch = () => {
     },
     filterContainer: {
       backgroundColor: '#1f2937',
-      padding: '24px',
+      // ✅ UPDATED: Responsive padding
+      padding: window.innerWidth <= 768 ? '16px' : '24px',
       borderRadius: '16px',
       marginBottom: '32px'
     },
     filterSection: {
-      marginBottom: '24px'
+      // ✅ UPDATED: Responsive margin
+      marginBottom: window.innerWidth <= 768 ? '16px' : '24px'
     },
     sectionTitle: {
-      fontSize: '1.2rem',
+      // ✅ UPDATED: Responsive font size
+      fontSize: window.innerWidth <= 768 ? '1rem' : '1.2rem',
       color: '#10b981',
       marginBottom: '16px'
     },
@@ -214,13 +209,16 @@ const GreenFundSearch = () => {
       display: 'flex',
       alignItems: 'center',
       gap: '8px',
-      padding: '8px 16px',
+      // ✅ UPDATED: Responsive padding
+      padding: window.innerWidth <= 768 ? '6px 12px' : '8px 16px',
       backgroundColor: '#111827',
       border: '1px solid #374151',
       borderRadius: '8px',
       cursor: 'pointer',
       color: '#f3f4f6',
-      transition: 'background-color 0.2s ease'
+      transition: 'background-color 0.2s ease',
+      // ✅ UPDATED: Responsive font size
+      fontSize: window.innerWidth <= 768 ? '0.85rem' : '1rem'
     },
     checkbox: {
       accentColor: '#10b981',
@@ -228,20 +226,24 @@ const GreenFundSearch = () => {
     },
     fundsContainer: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-      gap: '20px',
+      // ✅ UPDATED: Responsive grid
+      gridTemplateColumns: window.innerWidth <= 768 
+        ? '1fr' 
+        : 'repeat(auto-fit, minmax(250px, 1fr))',
+      gap: window.innerWidth <= 768 ? '15px' : '20px',
       backgroundColor: '#1f2937',
       borderRadius: '12px',
       overflow: 'hidden'
     },
     fundCard: {
       backgroundColor: '#1e293b',
-      padding: '28px',
+      // ✅ UPDATED: Responsive padding
+      padding: window.innerWidth <= 768 ? '20px' : '28px',
       cursor: 'pointer',
       height: '100%',
       display: 'flex',
       flexDirection: 'column',
-      gap: '20px',
+      gap: window.innerWidth <= 768 ? '15px' : '20px',
       transition: 'transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease',
       border: '2px solid #374151',
       borderRadius: '12px'
@@ -254,7 +256,8 @@ const GreenFundSearch = () => {
       borderRadius: '12px'
     },
     fundTitle: {
-      fontSize: '1rem',
+      // ✅ UPDATED: Responsive font size
+      fontSize: window.innerWidth <= 768 ? '0.9rem' : '1rem',
       color: '#10b981',
       display: 'flex',
       alignItems: 'flex-start',
@@ -494,7 +497,3 @@ const GreenFundSearch = () => {
 };
 
 export default GreenFundSearch;
-
-
-
-
