@@ -1,12 +1,13 @@
 // components/Navbar.jsx
 import { Mail, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const handleGetStarted = () => {
     navigate("/features");
@@ -20,23 +21,38 @@ const Navbar = () => {
     setIsMenuOpen(false);
   };
 
-  // ✅ Check if it's landing page
+  // ✅ Scroll detection for landing page
+  useEffect(() => {
+    const handleScroll = () => {
+      if (location.pathname === '/') {
+        setIsScrolled(window.scrollY > 100);
+      }
+    };
+
+    if (location.pathname === '/') {
+      window.addEventListener('scroll', handleScroll);
+      return () => window.removeEventListener('scroll', handleScroll);
+    }
+  }, [location.pathname]);
+
+  // ✅ Dynamic positioning based on page and scroll
   const isLandingPage = location.pathname === '/';
+  const shouldBeFixed = !isLandingPage || (isLandingPage && isScrolled);
   
-  // ✅ Use absolute positioning on landing page, fixed on others
-  const navPositionClasses = isLandingPage 
-    ? "absolute top-3 left-6 right-6 z-50" 
-    : "fixed top-3 left-6 right-6 z-50";
+  const navPositionClasses = shouldBeFixed 
+    ? "fixed top-3 left-6 right-6 z-50" 
+    : "absolute top-3 left-6 right-6 z-50";
 
   return (
     <>
-      {/* Conditional Positioned Navbar */}
+      {/* Dynamic Positioned Navbar */}
       <nav
         className={`${navPositionClasses} flex items-center justify-between 
                    bg-gray-900/70 hover:bg-gray-900/90 backdrop-blur-xl 
                    border border-gray-700/50 rounded-2xl px-8 py-4 
                    shadow-2xl shadow-green-500/10 transition-all duration-300 
-                   hover:shadow-green-500/20 text-gray-100`}
+                   hover:shadow-green-500/20 text-gray-100 
+                   ${isScrolled ? 'animate-in slide-in-from-top-2' : ''}`}
       >
         {/* Logo */}
         <span
