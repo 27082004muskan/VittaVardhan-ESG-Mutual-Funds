@@ -3,6 +3,9 @@ import { Mail, Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
+// Import the green sustainability image
+import sustainabilityLogo from '../assets/logo.png'; // Replace with your actual image path
+
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -54,14 +57,38 @@ const Navbar = () => {
                    hover:shadow-green-500/20 text-gray-100 
                    ${isScrolled ? 'animate-in slide-in-from-top-2' : ''}`}
       >
-        {/* Logo */}
-        <span
-          className="text-2xl font-bold text-green-500 hover:text-green-400 
-                        transition-all duration-300 transform hover:scale-105 cursor-pointer"
+        {/* Logo with Image and Text */}
+        <div 
+          className="flex items-center space-x-3 cursor-pointer group"
           onClick={() => navigate('/')}
         >
-          GreenVest
-        </span>
+          {/* Green Sustainability Image */}
+          <div className="relative">
+            <img 
+              src={sustainabilityLogo} 
+              alt="VittaVardhan Sustainability" 
+              className="w-12 h-12 rounded-xl object-cover border-2 border-green-500/20 
+                        group-hover:border-green-400/40 transition-all duration-300
+                        group-hover:scale-110 shadow-lg"
+            />
+            {/* Subtle green glow effect */}
+            <div className="absolute inset-0 rounded-xl bg-green-500/10 
+                          opacity-0 group-hover:opacity-100 transition-all duration-300" />
+          </div>
+          
+          {/* Brand Text */}
+          <div className="flex flex-col">
+            <span className="text-xl font-bold text-green-500 
+                          group-hover:text-green-400 transition-all duration-300 
+                          transform group-hover:scale-105 leading-tight">
+              Vitta<span className="text-green-300">वर्धन</span>
+            </span>
+            <span className="text-xs text-gray-400 group-hover:text-gray-300 
+                          transition-all duration-300 -mt-1 tracking-wider">
+              Green World !
+            </span>
+          </div>
+        </div>
 
         {/* Desktop Navigation Links */}
         <div className="hidden lg:flex items-center">
@@ -111,7 +138,7 @@ const Navbar = () => {
           {/* Contact & Get Started */}
           <div className="flex items-center space-x-4">
             <button
-              onClick={() => window.location.href = 'mailto:contact@greenvest.com'}
+              onClick={() => window.location.href = 'mailto:contact@vittavardhan.com'}
               className="text-gray-200 p-2 rounded-xl hover:bg-gray-700/50 
                          transition-all duration-300 backdrop-blur-sm hover:text-green-400"
               title="Contact Us"
@@ -134,7 +161,7 @@ const Navbar = () => {
         {/* Mobile Menu Button */}
         <div className="lg:hidden flex items-center space-x-3">
           <button
-            onClick={() => window.location.href = 'mailto:contact@greenvest.com'}
+            onClick={() => window.location.href = 'mailto:contact@vittavardhan.com'}
             className="text-gray-200 p-2 rounded-xl hover:bg-gray-700/50 
                        transition-all duration-300"
             title="Contact Us"
@@ -176,17 +203,29 @@ const Navbar = () => {
                     }`}
       >
         <div className="p-6">
-          {/* Mobile Header */}
+          {/* Mobile Header with Logo */}
           <div className="flex items-center justify-between mb-6">
-            <span 
-              className="text-xl font-bold text-green-500 cursor-pointer"
+            <div 
+              className="flex items-center space-x-2 cursor-pointer group"
               onClick={() => {
                 navigate('/');
                 closeMenu();
               }}
             >
-              GreenVest
-            </span>
+              <img 
+                src={sustainabilityLogo} 
+                alt="VittaVardhan" 
+                className="w-8 h-8 rounded-lg object-cover border border-green-500/20"
+              />
+              <div className="flex flex-col">
+                <span className="text-lg font-bold text-green-500 leading-tight">
+                  Vitta<span className="text-green-300">वर्धन</span>
+                </span>
+                <span className="text-xs text-gray-400 -mt-1">
+                  VittaVardhan
+                </span>
+              </div>
+            </div>
             <button
               onClick={closeMenu}
               className="text-gray-200 p-2 rounded-xl hover:bg-gray-700/50 
