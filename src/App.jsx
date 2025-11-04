@@ -10,6 +10,7 @@ import LandingPage from "./components/landing/LandingPage";
 import RewardsPage from "./components/rewards";
 import Navbar from "./components/Navbar";
 
+
 function NavbarWrapper() {
   const location = useLocation();
   
