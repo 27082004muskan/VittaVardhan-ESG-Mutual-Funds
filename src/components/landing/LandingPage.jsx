@@ -1,4 +1,4 @@
-
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AboutUs from "./About";
 import FAQSection from "./FAQSection";
@@ -6,25 +6,72 @@ import Footer from "./Footer";
 import Working from "./Working";
 import FeatureSection from "./Feature";
 
+// Import your background image from assets
+import backgroundImage from '../../assets/bg.gif';// Replace with your actual image name
+
 const LandingPage = () => {
   const navigate = useNavigate();
+  const [displayText, setDisplayText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [loopNum, setLoopNum] = useState(0);
+  const [typingSpeed, setTypingSpeed] = useState(150);
+  
+  const words = ["Invest Smart.. ", "Invest Green ..", "Invest for a Better Tomorrow.."," Grow with ESG.. "];
 
   const handleGetStarted = () => {
     navigate("/features");
   };
 
+  // Typewriter Effect
+  useEffect(() => {
+    const handleType = () => {
+      const i = loopNum % words.length;
+      const fullText = words[i];
+
+      setDisplayText(
+        isDeleting
+          ? fullText.substring(0, displayText.length - 1)
+          : fullText.substring(0, displayText.length + 1)
+      );
+
+      setTypingSpeed(isDeleting ? 30 : 150);
+
+      if (!isDeleting && displayText === fullText) {
+        setTimeout(() => setIsDeleting(true), 2000);
+      } else if (isDeleting && displayText === "") {
+        setIsDeleting(false);
+        setLoopNum(loopNum + 1);
+      }
+    };
+
+    const timer = setTimeout(handleType, typingSpeed);
+    return () => clearTimeout(timer);
+  }, [displayText, isDeleting, loopNum, typingSpeed, words]);
+
   return (
     <div className="w-full min-h-screen bg-gray-900 text-gray-100">
-      {/* Enhanced Hero Section */}
+      {/* Enhanced Hero Section with Background Images */}
       <section
         className="relative h-screen w-full flex items-center justify-center 
              bg-gradient-to-br from-green-900 via-gray-900 to-gray-900 
              overflow-hidden -mt-3"
       >
-        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+        {/* Background Images - Increased Opacity */}
+        <div className="absolute inset-0">
+          {/* Your local background image with higher opacity */}
+          <div 
+            className="absolute inset-0 opacity-60 bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: `url(${backgroundImage})`
+            }}
+          />
+        </div>
 
-        {/* Animated Background Elements */}
-        <div className="absolute inset-0 opacity-20">
+        {/* Reduced overlay opacity to show image better */}
+        <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
+
+        {/* Animated Background Elements - Reduced opacity */}
+        <div className="absolute inset-0 opacity-10">
           <div
             className="absolute top-1/4 left-1/4 w-64 h-64 bg-green-500 
                          rounded-full filter blur-3xl animate-pulse"
@@ -33,19 +80,42 @@ const LandingPage = () => {
             className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-green-600 
                          rounded-full filter blur-3xl animate-pulse delay-1000"
           />
+          <div
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+                         w-96 h-96 bg-green-400 rounded-full filter blur-3xl animate-pulse delay-2000 opacity-20"
+          />
         </div>
 
-        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-          <h1
-            className="text-6xl font-bold mb-6 bg-gradient-to-r from-green-400 
-                         to-green-600 bg-clip-text text-transparent"
-          >
-            Invest Smart, Invest Green!
-          </h1>
-          <p className="text-xl mb-8 text-gray-200 font-light">
-            Invest sustainably with ESG funds and secure a greener future today!
-          </p>
+        <div className="relative z-10 text-center px-4 max-w-5xl mx-auto">
+          {/* Brand Name - Vittaवर्धन */}
+          <div className="mb-8">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold 
+                          bg-gradient-to-r from-green-400 to-green-600 
+                          bg-clip-text text-transparent mb-4
+                          tracking-wide leading-tight">
+              Vitta<span className="text-green-300">वर्धन</span>
+            </h1>
+          </div>
 
+          {/* Typewriter Effect for Tagline - Reduced Size */}
+          <div className="mb-6">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold 
+                          bg-gradient-to-r from-green-400 to-green-600 
+                          bg-clip-text text-transparent leading-tight h-16 md:h-20 lg:h-24">
+              <span className="typewriter-text">
+                {displayText}
+                <span className="animate-pulse text-green-400">|</span>
+              </span>
+            </h2>
+          </div>
+          
+          {/* Subtitle */}
+          {/* <p className="text-lg md:text-xl lg:text-2xl mb-8 text-gray-200 font-light 
+                        max-w-4xl mx-auto leading-relaxed px-4">
+            Invest sustainably with ESG funds and secure a greener future today!
+          </p> */}
+
+          {/* Get Started Button - Unchanged */}
           <button
             onClick={handleGetStarted}
             className="bg-green-500 hover:bg-green-600 text-white px-8 py-3 
@@ -79,6 +149,23 @@ const LandingPage = () => {
         </div>
       </div>
       <Footer />
+      
+      {/* Add custom styles for typewriter effect */}
+      <style jsx>{`
+        .typewriter-text {
+          border-right: 2px solid #4ade80;
+          animation: blink-caret 1.5s infinite;
+        }
+        
+        @keyframes blink-caret {
+          from, to {
+            border-color: transparent;
+          }
+          50% {
+            border-color: #4ade80;
+          }
+        }
+      `}</style>
     </div>
   );
 };
