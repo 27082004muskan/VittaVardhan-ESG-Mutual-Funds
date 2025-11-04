@@ -1,4 +1,4 @@
-import image from "../../assets/esg.jpg";
+import image from "../../assets/esg.gif";
 
 const AboutUs = () => {
   return (
@@ -10,7 +10,7 @@ const AboutUs = () => {
             About Us 🌱💡
           </h2>
           <p className="text-base md:text-lg text-gray-400 mb-6">
-            At <span className="text-green-400 font-semibold">GreenVest</span>
+            At <span className="text-green-400 font-semibold">VittaVardhan</span>
             , we believe that investing should not only generate financial
             returns but also contribute to a sustainable future. Our platform
             encourages individuals to invest at least 1% of their income in
