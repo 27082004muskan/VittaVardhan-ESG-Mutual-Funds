@@ -9,10 +9,12 @@ import ESGEducation from './ESGEducation';
 import { useNavigate } from 'react-router-dom';
 import RewardsPage from "./rewards";
 import PlanMaker from "./ESGInvestmentPlanMaker";
+import SmartFeatures from "./SmartFeatures";
 
 const features = [
   { name: "ESG Investment Guide", icon: <FaLeaf />, component: <ESGEducation /> },
   { name: "Green Mutual Fund", icon: <FaGavel />, component: <GreenFundSearch /> },
+  {name: "Smart Features", icon: <FaLeaf />, component: <SmartFeatures />},
   { name: "ESG Funds Explorer", icon: <FaMoneyBillWave />, component: <GreenMutualFund /> },
   { name: "Impact Calculator", icon: <FaCalculator />, component: <ImpactCalculator /> },
   {name: "ESG Investment Plan Maker", icon: <FaCalculator />, component: <PlanMaker /> },
