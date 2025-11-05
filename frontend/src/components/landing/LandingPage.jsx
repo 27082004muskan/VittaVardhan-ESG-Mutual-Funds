@@ -20,7 +20,7 @@ const LandingPage = () => {
   const words = ["Invest Smart.. Invest Green ..","Invest for a Better Tomorrow.."," Grow with ESG..Save the world..","Your Green Investment Partner.."];
 
   const handleGetStarted = () => {
-    navigate("/features");
+    navigate("/login");
   };
 
   // Typewriter Effect
