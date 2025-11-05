@@ -112,7 +112,7 @@ const Login = () => {
         <div className="bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-gray-700">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-green-400 to-green-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-linear-to-r from-green-400 to-green-600 bg-clip-text text-transparent">
               Green Vitta<span className="text-green-300">वर्धन</span>
             </h1>
             <p className="text-gray-300 mt-2">Welcome back!</p>

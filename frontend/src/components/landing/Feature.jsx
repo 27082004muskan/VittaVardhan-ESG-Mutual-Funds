@@ -13,7 +13,7 @@ const FeatureCard = ({ title, description, icon: Icon }) => (
                   hover:shadow-2xl transition-all duration-500 hover:scale-102 
                   hover:border-green-500/30 group backdrop-blur-sm
                   relative overflow-hidden">
-    <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent 
+    <div className="absolute inset-0 bg-linear-to-br from-green-500/5 to-transparent 
                     opacity-0 group-hover:opacity-100 transition-opacity duration-500"/>
     <div className="relative z-10">
       <div className="flex items-center mb-6">
@@ -76,9 +76,9 @@ const FeaturesSection = () => {
       <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 md:py-24">
         <div className="text-center mb-16 sm:mb-20">
           <h2 className="text-xl sm:text-4xl md:text-5xl font-bold text-white mb-4 
-                         bg-gradient-to-r from-green-400 via-green-300 to-green-500 
+                         bg-linear-to-r from-green-400 via-green-300 to-green-500 
                          bg-clip-text 
-                         [text-shadow:_0_1px_0_rgb(0_0_0_/_40%)]">
+                         [text-shadow:0_1px_0_rgb(0_0_0/40%)]">
             Why Choose ESG Investing?
           </h2>
           <p className="text-sm sm:text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto
