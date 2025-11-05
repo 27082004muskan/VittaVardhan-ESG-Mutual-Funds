@@ -1,69 +1,75 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
+// hooks/useAuth.js - Clean version without conflicting toasts
+import { useState, useEffect } from 'react';
 
 export const useAuth = () => {
-  const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
 
-  const logout = async () => {
-    setIsLoading(true);
-    const loadingToast = toast.loading('Logging out...');
+  // Check authentication status on mount
+  useEffect(() => {
+    checkAuthStatus();
+  }, []);
+
+  const checkAuthStatus = () => {
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
     
-    try {
-      // Call backend logout endpoint
-      const token = localStorage.getItem('token');
-      if (token) {
-        try {
-          await fetch('http://localhost:5001/api/auth/logout', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            }
-          });
-        } catch (error) {
-          console.warn('Backend logout failed:', error);
-        }
+    if (token && userData) {
+      try {
+        const parsedUser = JSON.parse(userData);
+        setUser(parsedUser);
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        // Don't show toast here - silent cleanup
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        setUser(null);
+        setIsAuthenticated(false);
       }
-
-      // Clear local storage
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      
-      toast.dismiss(loadingToast);
-      toast.success('Successfully logged out!');
-      
-      setTimeout(() => {
-        navigate('/login');
-      }, 1000);
-      
-    } catch (error) {
-      console.error('Logout error:', error);
-      toast.dismiss(loadingToast);
-      toast.error('Logout encountered an issue');
-      
-      // Force logout anyway
-      localStorage.clear();
-      navigate('/login');
-    } finally {
-      setIsLoading(false);
     }
   };
 
-  const isAuthenticated = () => {
-    return !!localStorage.getItem('token');
+  const getCurrentUser = () => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      try {
+        return JSON.parse(userData);
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        return null;
+      }
+    }
+    return null;
   };
 
-  const getCurrentUser = () => {
-    const userStr = localStorage.getItem('user');
-    return userStr ? JSON.parse(userStr) : null;
+  const login = (userData, token) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
+    setIsAuthenticated(true);
+  };
+
+  const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUser(null);
+    setIsAuthenticated(false);
+    // Don't show toast here - let the component handle it
+  };
+
+  const updateUser = (updatedUserData) => {
+    setUser(updatedUserData);
+    localStorage.setItem('user', JSON.stringify(updatedUserData));
   };
 
   return {
-    logout,
     isAuthenticated,
+    user,
     getCurrentUser,
-    isLoading
+    login,
+    logout,
+    updateUser,
+    checkAuthStatus
   };
 };

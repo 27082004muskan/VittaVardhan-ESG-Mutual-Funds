@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaLeaf, FaMoneyBillWave, FaNewspaper, FaUsers, FaCalculator, FaGavel, FaBars, FaTimes } from "react-icons/fa";
 import { useAuth } from '../hooks/useAuth';
-import  { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 import ImpactCalculator from "./ImpactCalculator";
 import GreenNews from './GreenNews';
 import GreenMutualFund from './GreenMutualFund';
@@ -10,6 +10,8 @@ import ESGEducation from './ESGEducation';
 import RewardsPage from "./rewards";
 import PlanMaker from "./ESGInvestmentPlanMaker";
 import SmartFeatures from "./SmartFeatures";
+import ProfileButton from "./ProfileButton";
+import ProfilePage from './ProfilePage'; // Add this import
 
 const features = [
   { name: "ESG Investment Guide", icon: <FaLeaf />, component: <ESGEducation /> },
@@ -25,11 +27,20 @@ const features = [
 const FeaturePage = () => {
   const [selectedFeature, setSelectedFeature] = useState(features[0]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { logout, getCurrentUser, isLoading } = useAuth();
+  const [showProfile, setShowProfile] = useState(false); // Add profile state
+  const { getCurrentUser } = useAuth();
   const currentUser = getCurrentUser();
 
   const handleFeatureSelect = (feature) => {
     setSelectedFeature(feature);
+    setShowProfile(false); // Hide profile when selecting features
+    setIsSidebarOpen(false);
+  };
+
+  // Add profile click handler
+  const handleProfileClick = () => {
+    setShowProfile(true);
+    setSelectedFeature(null); // Clear selected feature
     setIsSidebarOpen(false);
   };
 
@@ -89,45 +100,12 @@ const FeaturePage = () => {
           <div className="flex justify-between items-center mb-3 pt-12 md:pt-0">
             <div className="flex-1">
               <h2 className="text-xl md:text-2xl font-bold">Features</h2>
-              {currentUser && (
-                <p className="text-sm text-green-400 font-medium truncate mt-1">
-                  Welcome, {currentUser.name}!
-                </p>
-              )}
             </div>
-            
-            {/* Compact Logout Button */}
-            <button
-              onClick={logout}
-              disabled={isLoading}
-              className="px-3 py-2 bg-red-500 hover:bg-red-600 
-                       disabled:bg-gray-600 disabled:cursor-not-allowed
-                       text-white rounded-lg transition-all duration-300 
-                       flex items-center gap-2 text-sm
-                       hover:scale-105 disabled:scale-100 ml-2"
-              title={isLoading ? 'Logging out...' : 'Logout'}
-            >
-              {isLoading ? (
-                <div className="animate-spin rounded-full h-3 w-3 border-2 border-white border-t-transparent"></div>
-              ) : (
-                <svg 
-                  className="w-3 h-3" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth={2} 
-                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013 3v1" 
-                  />
-                </svg>
-              )}
-              <span className="hidden sm:inline">
-                {isLoading ? 'Logging out...' : 'Logout'}
-              </span>
-            </button>
+          </div>
+
+          {/* Profile Button - ADD THIS */}
+          <div className="mb-4">
+            <ProfileButton onProfileClick={handleProfileClick} />
           </div>
 
           {/* Feature List - COMPACT SPACING */}
@@ -138,7 +116,7 @@ const FeaturePage = () => {
                 className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer 
                            transition-all duration-200 text-sm md:text-base
                            hover:shadow-lg ${
-                  selectedFeature.name === feature.name 
+                  !showProfile && selectedFeature && selectedFeature.name === feature.name 
                     ? "bg-green-500 text-gray-900 shadow-lg" 
                     : "hover:bg-gray-700 hover:transform hover:scale-[1.02]"
                 }`}
@@ -151,7 +129,7 @@ const FeaturePage = () => {
                 <span className="truncate font-medium">
                   {feature.name}
                 </span>
-                {selectedFeature.name === feature.name && (
+                {!showProfile && selectedFeature && selectedFeature.name === feature.name && (
                   <div className="ml-auto">
                     <div className="w-2 h-2 bg-gray-900 rounded-full"></div>
                   </div>
@@ -169,10 +147,13 @@ const FeaturePage = () => {
           </div>
         </div>
 
-        {/* Content Area */}
+        {/* Content Area - UPDATED */}
         <div className="flex-1 p-4 md:p-8 overflow-y-auto bg-gray-900">
           <div className="pt-16 md:pt-0 h-full">
-            {selectedFeature.component ? (
+            {/* Show Profile or Feature */}
+            {showProfile ? (
+              <ProfilePage />
+            ) : selectedFeature && selectedFeature.component ? (
               <div className="h-full">
                 {React.cloneElement(selectedFeature.component, { 
                   onFeatureSelect: setSelectedFeature,
@@ -183,13 +164,13 @@ const FeaturePage = () => {
               <div className="flex items-center justify-center h-full">
                 <div className="text-center">
                   <div className="text-4xl md:text-6xl mb-4 text-green-500">
-                    {selectedFeature.icon}
+                    🌱
                   </div>
                   <h1 className="text-2xl md:text-4xl font-semibold mb-2 px-4">
-                    {selectedFeature.name}
+                    Welcome to VittaVardhan
                   </h1>
                   <p className="text-gray-400 text-lg">
-                    Feature coming soon...
+                    Select a feature to get started with sustainable investing
                   </p>
                 </div>
               </div>
