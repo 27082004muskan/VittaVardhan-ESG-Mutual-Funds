@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AboutUs from "./About";
@@ -16,7 +17,7 @@ const LandingPage = () => {
   const [loopNum, setLoopNum] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(150);
   
-  const words = ["Invest Smart.. ", "Invest Green ..", "Invest for a Better Tomorrow.."," Grow with ESG.. "];
+  const words = ["Invest Smart.. Invest Green ..","Invest for a Better Tomorrow.."," Grow with ESG..Save the world..","Your Green Investment Partner.."];
 
   const handleGetStarted = () => {
     navigate("/features");
@@ -93,15 +94,16 @@ const LandingPage = () => {
                           bg-gradient-to-r from-green-400 to-green-600 
                           bg-clip-text text-transparent mb-4
                           tracking-wide leading-tight">
-              Vitta<span className="text-green-300">वर्धन</span>
+             Green Vitta<span className="text-green-300">वर्धन</span>
             </h1>
           </div>
 
           {/* Typewriter Effect for Tagline - Reduced Size */}
           <div className="mb-6">
-            <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold 
-                          bg-gradient-to-r from-green-400 to-green-600 
-                          bg-clip-text text-transparent leading-tight h-16 md:h-20 lg:h-24">
+            <h2 className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold 
+bg-gradient-to-r from-white to-gray-300 
+bg-clip-text text-transparent leading-tight h-8 md:h-20 lg:h-24
+">
               <span className="typewriter-text">
                 {displayText}
                 <span className="animate-pulse text-green-400">|</span>
@@ -110,8 +112,8 @@ const LandingPage = () => {
           </div>
           
           {/* Subtitle */}
-          {/* <p className="text-lg md:text-xl lg:text-2xl mb-8 text-gray-200 font-light 
-                        max-w-4xl mx-auto leading-relaxed px-4">
+           {/* <p className="text-lg md:text-xl lg:text-2xl mb-8 text-gray-200 font-light 
+                        max-w-4xl mx-auto leading-relaxed">
             Invest sustainably with ESG funds and secure a greener future today!
           </p> */}
 
@@ -123,7 +125,7 @@ const LandingPage = () => {
                       transform hover:scale-105 hover:shadow-lg relative 
                       overflow-hidden group"
           >
-            <span className="relative z-10">Get Started</span>
+            <span className="relative z-10">Get Started </span>
             <div
               className="absolute inset-0 bg-green-400 transform scale-x-0 
                            group-hover:scale-x-100 transition-transform duration-300 
