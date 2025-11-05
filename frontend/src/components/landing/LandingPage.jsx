@@ -17,6 +17,7 @@ const LandingPage = () => {
   const [loopNum, setLoopNum] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(150);
   
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const words = ["Invest Smart.. Invest Green ..","Invest for a Better Tomorrow.."," Grow with ESG..Save the world..","Your Green Investment Partner.."];
 
   const handleGetStarted = () => {
@@ -54,7 +55,7 @@ const LandingPage = () => {
       {/* Enhanced Hero Section with Background Images */}
       <section
         className="relative h-screen w-full flex items-center justify-center 
-             bg-gradient-to-br from-green-900 via-gray-900 to-gray-900 
+             bg-linear-to-br from-green-900 via-gray-900 to-gray-900 
              overflow-hidden -mt-3"
       >
         {/* Background Images - Increased Opacity */}
@@ -91,7 +92,7 @@ const LandingPage = () => {
           {/* Brand Name - Vittaवर्धन */}
           <div className="mb-8">
             <h1 className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold 
-                          bg-gradient-to-r from-green-400 to-green-600 
+                          bg-linear-to-r from-green-400 to-green-600 
                           bg-clip-text text-transparent mb-4
                           tracking-wide leading-tight">
              Green Vitta<span className="text-green-300">वर्धन</span>
@@ -101,7 +102,7 @@ const LandingPage = () => {
           {/* Typewriter Effect for Tagline - Reduced Size */}
           <div className="mb-6">
             <h2 className="text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold 
-bg-gradient-to-r from-white to-gray-300 
+bg-linear-to-r from-white to-gray-300 
 bg-clip-text text-transparent leading-tight h-8 md:h-20 lg:h-24
 ">
               <span className="typewriter-text">
