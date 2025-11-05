@@ -32,24 +32,14 @@ const userSchema = new mongoose.Schema({
     enum: ['email', 'google', 'phone'],
     default: 'email'
   },
-  totalInvestment: {
-    type: Number,
-    default: 0
+  isActive: {
+    type: Boolean,
+    default: true
   },
-  currentPortfolioValue: {
-    type: Number,
-    default: 0
-  },
-  // Investment preferences
-  riskTolerance: {
-    type: String,
-    enum: ['low', 'moderate', 'high'],
-    default: 'moderate'
-  },
-  investmentGoals: [{
-    type: String,
-    enum: ['retirement', 'education', 'house', 'emergency', 'wealth_building', 'environmental_impact']
-  }]
+  hasProfile: {
+    type: Boolean,
+    default: false
+  }
 }, {
   timestamps: true
 });
@@ -59,7 +49,6 @@ userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) {
     return next();
   }
-  
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();
@@ -69,5 +58,13 @@ userSchema.pre('save', async function(next) {
 userSchema.methods.comparePassword = async function(enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
+
+// Virtual for profile
+userSchema.virtual('profile', {
+  ref: 'Profile',
+  localField: '_id',
+  foreignField: 'user',
+  justOne: true
+});
 
 module.exports = mongoose.model('User', userSchema);

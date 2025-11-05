@@ -95,7 +95,7 @@ const LandingPage = () => {
                           bg-linear-to-r from-green-400 to-green-600 
                           bg-clip-text text-transparent mb-4
                           tracking-wide leading-tight">
-             Green Vitta<span className="text-green-300">वर्धन</span>
+              Vitta<span className="text-green-300">वर्धन</span>
             </h1>
           </div>
 
