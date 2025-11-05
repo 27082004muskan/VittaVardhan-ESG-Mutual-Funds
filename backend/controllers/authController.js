@@ -1,6 +1,8 @@
 const User = require('../models/User');
+const Profile = require('../models/Profile'); // ADD THIS LINE
 const generateToken = require('../utils/generateToken');
 const { validationResult } = require('express-validator');
+
 
 // @desc    Register new user
 // @route   POST /api/auth/register
@@ -68,7 +70,8 @@ const registerUser = async (req, res) => {
         role: user.role,
         authProvider: user.authProvider,
         totalInvestment: user.totalInvestment,
-        currentPortfolioValue: user.currentPortfolioValue
+        currentPortfolioValue: user.currentPortfolioValue,
+        profileCompleted: false // New users have incomplete profiles
       }
     });
 
@@ -80,6 +83,7 @@ const registerUser = async (req, res) => {
     });
   }
 };
+
 
 // @desc    Login user
 // @route   POST /api/auth/login
@@ -131,6 +135,10 @@ const loginUser = async (req, res) => {
     // Generate JWT token
     const token = generateToken(user._id);
 
+    // Check if user has completed profile
+    const profile = await Profile.findOne({ user: user._id });
+    const profileCompleted = profile ? profile.profileCompleted : false;
+
     console.log('✅ User logged in successfully:', user.email);
 
     res.json({
@@ -145,7 +153,8 @@ const loginUser = async (req, res) => {
         totalInvestment: user.totalInvestment,
         currentPortfolioValue: user.currentPortfolioValue,
         riskTolerance: user.riskTolerance,
-        investmentGoals: user.investmentGoals
+        investmentGoals: user.investmentGoals,
+        profileCompleted: profileCompleted
       }
     });
 
@@ -157,6 +166,7 @@ const loginUser = async (req, res) => {
     });
   }
 };
+
 
 // @desc    Get current user profile
 // @route   GET /api/auth/me
@@ -172,6 +182,10 @@ const getCurrentUser = async (req, res) => {
       });
     }
 
+    // Check if user has completed profile
+    const profile = await Profile.findOne({ user: user._id });
+    const profileCompleted = profile ? profile.profileCompleted : false;
+
     res.json({
       success: true,
       user: {
@@ -184,7 +198,8 @@ const getCurrentUser = async (req, res) => {
         currentPortfolioValue: user.currentPortfolioValue,
         riskTolerance: user.riskTolerance,
         investmentGoals: user.investmentGoals,
-        createdAt: user.createdAt
+        createdAt: user.createdAt,
+        profileCompleted: profileCompleted
       }
     });
   } catch (error) {
@@ -196,6 +211,7 @@ const getCurrentUser = async (req, res) => {
   }
 };
 
+
 // @desc    Logout user
 // @route   POST /api/auth/logout
 // @access  Private
@@ -205,6 +221,7 @@ const logoutUser = async (req, res) => {
     message: 'User logged out successfully'
   });
 };
+
 
 module.exports = {
   registerUser,
