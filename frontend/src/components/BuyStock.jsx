@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { useEffect, useState } from "react";
+=======
+import { useState } from "react";
+>>>>>>> 41f2e7a22ad5b3be465547b6ed7f823bba10cf52
 
 // Enhanced stock data with ESG scores
 const stocks = [

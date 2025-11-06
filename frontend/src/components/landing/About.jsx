@@ -7,7 +7,7 @@ const AboutUs = () => {
         {/* Left Side - Text Content */}
         <div className="w-full md:w-1/2 text-center md:text-left">
           <h2 className="text-3xl md:text-4xl font-bold text-green-400 mb-6">
-            About Us 🌱💡
+          About Us 🌱
           </h2>
           <p className="text-base md:text-lg text-gray-400 mb-6">
             At <span className="text-green-400 font-semibold">VittaVardhan</span>
