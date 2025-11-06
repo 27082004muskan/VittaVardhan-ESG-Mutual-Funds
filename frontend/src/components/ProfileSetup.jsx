@@ -15,7 +15,7 @@ const ProfileSetup = () => {
   
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
-  const [profileImage, setProfileImage] = useState(null);
+  const [, setProfileImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [profile, setProfile] = useState({
     name: currentUser?.name || '',
@@ -71,82 +71,66 @@ const ProfileSetup = () => {
     }
   };
 
-  const handleComplete = async () => {
-    setLoading(true);
-    const loadingToast = toast.loading('Setting up your profile...');
+const handleComplete = async () => {
+  setLoading(true);
+  const loadingToast = toast.loading('Setting up your profile...');
 
-    try {
-      const token = localStorage.getItem('token');
-      
-      // Create FormData for file upload
-      const formData = new FormData();
-      
-      // Add profile data
-      Object.keys(profile).forEach(key => {
-        if (Array.isArray(profile[key])) {
-          formData.append(key, JSON.stringify(profile[key]));
-        } else {
-          formData.append(key, profile[key]);
-        }
-      });
-      
-      // Add profile image if exists
-      if (profileImage) {
-        formData.append('profileImage', profileImage);
-      }
+  try {
+    const token = localStorage.getItem('token');
+    
+    console.log('📤 Sending profile data:', profile);
 
-      console.log('📤 Sending profile data:', profile);
+    const response = await fetch('http://localhost:5001/api/profile/complete', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(profile)
+    });
 
-      const response = await fetch('http://localhost:5001/api/profile/complete', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-        body: formData
-      });
-
-      const data = await response.json();
-      console.log('📥 Profile response:', data);
-      
-      if (response.ok && data.success) {
-        toast.dismiss(loadingToast);
-        toast.success('Profile setup completed! 🎉', {
-          duration: 2000,
-          style: {
-            background: '#10B981',
-            color: '#fff',
-          },
-        });
-        
-        // Update localStorage to mark profile as complete
-        const updatedUser = {
-          ...currentUser,
-          name: profile.name,
-          profileCompleted: true,
-          hasProfile: true,
-          profileImage: data.user?.profileImage || null
-        };
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-        
-        console.log('✅ Updated user data:', updatedUser);
-        
-        // Navigate to features page after a short delay
-        setTimeout(() => {
-          navigate('/features', { replace: true });
-        }, 2000);
-      } else {
-        toast.dismiss(loadingToast);
-        toast.error(data.message || 'Failed to complete profile setup');
-        console.error('❌ Profile setup failed:', data);
-      }
-    } catch (error) {
+    const data = await response.json();
+    console.log('📥 Profile response:', data);
+    
+    if (response.ok && data.success) {
       toast.dismiss(loadingToast);
-      toast.error('Network error occurred');
-      console.error('❌ Profile setup error:', error);
-    } finally {
-      setLoading(false);
+      toast.success('Profile setup completed! 🎉', {
+        duration: 2000,
+        style: {
+          background: '#10B981',
+          color: '#fff',
+        },
+      });
+      
+      // Update localStorage to mark profile as complete
+      const updatedUser = {
+        ...currentUser,
+        name: profile.name,
+        profileCompleted: true,
+        hasProfile: true
+      };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      
+      console.log('✅ Updated user data:', updatedUser);
+      
+      // Navigate to features page after completion
+      setTimeout(() => {
+        navigate('/features', { replace: true });
+      }, 2000);
+    } else {
+      toast.dismiss(loadingToast);
+      toast.error(data.message || 'Failed to complete profile setup');
+      console.error('❌ Profile setup failed:', data);
     }
-  };
+  } catch (error) {
+    toast.dismiss(loadingToast);
+    toast.error('Network error occurred');
+    console.error('❌ Profile setup error:', error);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   // ✅ FIXED: Clean skip without annoying blue toast
   const handleSkip = () => {
