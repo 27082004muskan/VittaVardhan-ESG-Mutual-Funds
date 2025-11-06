@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FaArrowLeft, FaLeaf, FaCheckCircle, FaChartLine, FaInfoCircle } from 'react-icons/fa';
 
@@ -9,6 +9,13 @@ const TransactionPage = () => {
   const [amount, setAmount] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [transaction, setTransaction] = useState(null);
+  const [coinsAwarded, setCoinsAwarded] = useState(0);
+  const [totalCoins, setTotalCoins] = useState(0);
+
+  useEffect(() => {
+    const stored = parseInt(localStorage.getItem('greenCoins') || '0', 10);
+    setTotalCoins(isNaN(stored) ? 0 : stored);
+  }, []);
 
   if (!fund) {
     return (
@@ -35,6 +42,48 @@ const TransactionPage = () => {
       schemeCode: fund.schemeCode
     };
     setTransaction(newTransaction);
+    // Award coins via backend (falls back to local if no token)
+    const coins = Math.floor(parseFloat(amount) / 500);
+    const token = localStorage.getItem('token');
+    if (coins > 0 && token) {
+      fetch('http://localhost:5001/api/coins/award', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ coins })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.success) {
+          setCoinsAwarded(data.coinsAwarded || coins);
+          setTotalCoins(data.totalCoins ?? 0);
+        } else {
+          // fallback local
+          const current = parseInt(localStorage.getItem('greenCoins') || '0', 10) || 0;
+          const updated = current + coins;
+          localStorage.setItem('greenCoins', String(updated));
+          setCoinsAwarded(coins);
+          setTotalCoins(updated);
+        }
+      })
+      .catch(() => {
+        const current = parseInt(localStorage.getItem('greenCoins') || '0', 10) || 0;
+        const updated = current + coins;
+        localStorage.setItem('greenCoins', String(updated));
+        setCoinsAwarded(coins);
+        setTotalCoins(updated);
+      });
+    } else if (coins > 0) {
+      const current = parseInt(localStorage.getItem('greenCoins') || '0', 10) || 0;
+      const updated = current + coins;
+      localStorage.setItem('greenCoins', String(updated));
+      setCoinsAwarded(coins);
+      setTotalCoins(updated);
+    } else {
+      setCoinsAwarded(0);
+    }
     setShowConfirmation(true);
   };
 
@@ -192,6 +241,26 @@ const TransactionPage = () => {
                 <p style={{ fontSize: '1.4rem', fontWeight: '600', color: '#10b981', margin: '12px 0' }}>
                   {transaction.fund}
                 </p>
+                {coinsAwarded > 0 && (
+                  <div style={{
+                    marginTop: '12px',
+                    marginBottom: '8px',
+                    backgroundColor: '#052e1c',
+                    border: '1px solid #065f46',
+                    color: '#a7f3d0',
+                    padding: '12px 16px',
+                    borderRadius: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px'
+                  }}>
+                    <span style={{fontSize: '1.4rem'}}>🪙</span>
+                    <div>
+                      <div style={{fontWeight: 700}}>You earned {coinsAwarded} coin{coinsAwarded>1?'s':''}!</div>
+                      <div style={{opacity: 0.9}}>Total Coins: {totalCoins}</div>
+                    </div>
+                  </div>
+                )}
                 <div style={{ marginTop: '24px', color: '#d1d5db' }}>
                   <p style={{ marginBottom: '8px' }}>
                     <FaChartLine style={{ display: 'inline', marginRight: '8px', color: '#10b981' }} />
