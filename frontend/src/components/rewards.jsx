@@ -1,8 +1,32 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaCoins, FaGift, FaQuestionCircle, FaLeaf } from 'react-icons/fa';
 
 const RewardsPage = () => {
   const navigate = useNavigate();
+  const [coins, setCoins] = useState(0);
+
+  // Read coins and keep in sync with other tabs / updates
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const fetchCoins = async () => {
+      if (token) {
+        try {
+          const res = await fetch('http://localhost:5001/api/coins', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          const data = await res.json();
+          if (data.success) {
+            setCoins(data.coins || 0);
+            return;
+          }
+        } catch {}
+      }
+      const stored = parseInt(localStorage.getItem('greenCoins') || '0', 10);
+      setCoins(isNaN(stored) ? 0 : stored);
+    };
+    fetchCoins();
+  }, []);
 
   // Define rewards with unique IDs
   const rewards = [
@@ -22,10 +46,13 @@ const RewardsPage = () => {
       <div className="max-w-6xl mx-auto p-6">
         {/* Header */}
         <header className="flex items-center justify-between mb-8">
-   
           <h1 className="text-3xl font-bold text-green-500 flex items-center gap-2">
             <FaLeaf /> GreenCoins Rewards
           </h1>
+          <div className="flex items-center gap-3 bg-gray-800 px-4 py-2 rounded-lg border border-green-700">
+            <FaCoins className="text-yellow-400" />
+            <span className="text-lg font-semibold">{coins}</span>
+          </div>
         </header>
 
         {/* Hero Section */}
