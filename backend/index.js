@@ -6,7 +6,7 @@ const colors = require('colors');
 // Import configuration and routes
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth');
-
+const profileRoutes = require('./routes/profile');
 // Load environment variables
 dotenv.config();
 
@@ -48,6 +48,8 @@ app.use((req, res, next) => {
 });
 
 // Routes
+
+// Routes
 app.get('/', (req, res) => {
   res.json({
     success: true,
@@ -58,7 +60,28 @@ app.get('/', (req, res) => {
       register: 'POST /api/auth/register',
       login: 'POST /api/auth/login',
       profile: 'GET /api/auth/me',
-      logout: 'POST /api/auth/logout'
+      logout: 'POST /api/auth/logout',
+      userProfile: 'GET /api/profile',
+      updateProfile: 'PUT /api/profile',
+      completeProfile: 'POST /api/profile/complete' // Add this line
+    }
+  });
+});
+
+
+app.get('/', (req, res) => {
+  res.json({
+    success: true,
+    message: 'VittaVardhan Authentication Server',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      register: 'POST /api/auth/register',
+      login: 'POST /api/auth/login',
+      profile: 'GET /api/auth/me',
+      logout: 'POST /api/auth/logout',
+      userProfile: 'GET /api/profile', // Add this
+      updateProfile: 'PUT /api/profile' // Add this
     }
   });
 });
@@ -75,6 +98,7 @@ app.get('/api/health', (req, res) => {
 
 // Mount auth routes
 app.use('/api/auth', authRoutes);
+app.use('/api/profile', profileRoutes);
 
 // Global error handler
 app.use((err, req, res, next) => {
