@@ -7,6 +7,8 @@ const colors = require('colors');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profile');
+const chatRoutes = require('./routes/chatRoutes');
+
 // Load environment variables
 dotenv.config();
 
@@ -35,7 +37,7 @@ app.use(cors({
   optionsSuccessStatus: 200
 }));
 
-// Handle preflight requests - FIXED VERSION
+// Handle preflight requests
 app.use((req, res, next) => {
   if (req.method === 'OPTIONS') {
     res.header('Access-Control-Allow-Origin', req.headers.origin);
@@ -47,41 +49,41 @@ app.use((req, res, next) => {
   next();
 });
 
-// Routes
-
-// Routes
+// Root route
 app.get('/', (req, res) => {
   res.json({
     success: true,
-    message: 'VittaVardhan Authentication Server',
-    version: '1.0.0',
+    message: 'VittaVardhan Backend Server',
+    version: '2.0.0',
+    features: ['Authentication', 'Profile Management', 'AI Chat Assistant', 'Investment Tools'],
     endpoints: {
+      // Authentication
       health: '/api/health',
       register: 'POST /api/auth/register',
       login: 'POST /api/auth/login',
       profile: 'GET /api/auth/me',
       logout: 'POST /api/auth/logout',
+      
+      // Profile Management
       userProfile: 'GET /api/profile',
       updateProfile: 'PUT /api/profile',
-      completeProfile: 'POST /api/profile/complete' // Add this line
-    }
-  });
-});
-
-
-app.get('/', (req, res) => {
-  res.json({
-    success: true,
-    message: 'VittaVardhan Authentication Server',
-    version: '1.0.0',
-    endpoints: {
-      health: '/api/health',
-      register: 'POST /api/auth/register',
-      login: 'POST /api/auth/login',
-      profile: 'GET /api/auth/me',
-      logout: 'POST /api/auth/logout',
-      userProfile: 'GET /api/profile', // Add this
-      updateProfile: 'PUT /api/profile' // Add this
+      completeProfile: 'POST /api/profile/complete',
+      
+      // AI Chat & Investment Tools - UPDATED ENDPOINTS
+      sendMessageFree: 'POST /api/chat/send-message-free',
+      calculateSIPFree: 'POST /api/chat/calculate-sip-free',
+      esgFundsFree: 'GET /api/chat/mutual-funds-free',
+      stockDataFree: 'GET /api/chat/stock-free/:symbol'
+    },
+    aiFeatures: {
+      status: 'Free Mode - No API Keys Required',
+      capabilities: [
+        'Investment Advice',
+        'SIP Calculations', 
+        'ESG Fund Recommendations',
+        'Real Stock Prices',
+        'Portfolio Guidance'
+      ]
     }
   });
 });
@@ -90,15 +92,21 @@ app.get('/', (req, res) => {
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
-    message: 'VittaVardhan Auth API is running!',
+    message: 'VittaVardhan API is running!',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || 'development',
+    features: {
+      database: 'Connected',
+      chat: 'Enabled',
+      cors: 'Enabled'
+    }
   });
 });
 
-// Mount auth routes
+// Mount routes
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/chat', chatRoutes); // ✅ KEEP ONLY THIS ONE
 
 // Global error handler
 app.use((err, req, res, next) => {
@@ -111,7 +119,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Handle 404 routes - REMOVED PROBLEMATIC WILDCARD
+// Handle 404 routes
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -123,9 +131,12 @@ app.use((req, res) => {
 const PORT = process.env.PORT || 5001;
 
 const server = app.listen(PORT, () => {
-  console.log(`🔐 VittaVardhan Auth Server running on port ${PORT}`.yellow.bold);
-  console.log(`🔐 Health check: http://localhost:${PORT}/api/health`.green);
-  console.log(`🔐 Environment: ${process.env.NODE_ENV || 'development'}`.blue);
+  console.log(`🚀 VittaVardhan Server running on port ${PORT}`.yellow.bold);
+  console.log(`🔐 Auth endpoints: http://localhost:${PORT}/api/auth`.green);
+  console.log(`🤖 Chat endpoints: http://localhost:${PORT}/api/chat`.blue);
+  console.log(`📊 Health check: http://localhost:${PORT}/api/health`.green);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`.blue);
+  console.log(`🎯 Chat Status: Free Mode Enabled`.cyan);
 });
 
 // Handle unhandled promise rejections
