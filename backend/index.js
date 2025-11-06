@@ -7,6 +7,7 @@ const colors = require('colors');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profile');
+const coinRoutes = require('./routes/coins');
 // Load environment variables
 dotenv.config();
 
@@ -99,6 +100,7 @@ app.get('/api/health', (req, res) => {
 // Mount auth routes
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/coins', coinRoutes);
 
 // Global error handler
 app.use((err, req, res, next) => {

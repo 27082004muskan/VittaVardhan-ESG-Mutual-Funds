@@ -27,6 +27,11 @@ const userSchema = new mongoose.Schema({
     enum: ['user', 'admin'],
     default: 'user'
   },
+  coins: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
   authProvider: {
     type: String,
     enum: ['email', 'google', 'phone'],
