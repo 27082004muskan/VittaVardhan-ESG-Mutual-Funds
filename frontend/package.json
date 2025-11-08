@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "server": "node src/api/server.js",
+    "start": "node server.js",
     "server:dev": "nodemon src/api/server.js"
   },
   "dependencies": {
