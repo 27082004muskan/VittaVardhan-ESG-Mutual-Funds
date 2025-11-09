@@ -2,18 +2,21 @@ const express = require('express');
 const router = express.Router();
 const OpenAI = require('openai');
 
-// Check if API key is loaded
-if (!process.env.OPENAI_API_KEY) {
-  console.error('❌ ERROR: OPENAI_API_KEY is not set in environment variables!');
-  console.error('Please check your .env file in the backend directory.');
+// Initialize OpenAI client only if API key is available
+let openai = null;
+if (process.env.OPENAI_API_KEY) {
+  try {
+    openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY
+    });
+    console.log('✅ OpenAI client initialized');
+  } catch (error) {
+    console.error('❌ Failed to initialize OpenAI client:', error.message);
+  }
+} else {
+  console.warn('⚠️  WARNING: OPENAI_API_KEY is not set in environment variables!');
+  console.warn('⚠️  OpenAI features will use fallback responses. Please add OPENAI_API_KEY to your .env file.');
 }
-
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
-
-console.log('✅ OpenAI client initialized');
 
 router.post('/send-message-free', async (req, res) => {
     try {
@@ -28,9 +31,9 @@ router.post('/send-message-free', async (req, res) => {
             });
         }
 
-        if (!process.env.OPENAI_API_KEY) {
-            console.error('❌ OPENAI_API_KEY not found!');
-            throw new Error('OpenAI API key is not configured');
+        if (!openai || !process.env.OPENAI_API_KEY) {
+            console.warn('⚠️  OPENAI_API_KEY not found, using fallback response');
+            // Continue to fallback response below
         }
 
         // System prompt - Acting as an ESG Broker
@@ -67,9 +70,11 @@ RESPONSE STYLE:
 
 Remember: You are a broker helping users invest in ESG funds. Be proactive, ask questions, and provide expert guidance.`;
 
-        try {
-            // Call OpenAI API
-            const completion = await openai.chat.completions.create({
+        // Only use OpenAI if client is initialized
+        if (openai && process.env.OPENAI_API_KEY) {
+            try {
+                // Call OpenAI API
+                const completion = await openai.chat.completions.create({
                 model: "gpt-3.5-turbo",
                 messages: [
                     {
@@ -110,8 +115,14 @@ Remember: You are a broker helping users invest in ESG funds. Be proactive, ask 
                 timestamp: new Date(),
                 source: 'openai-gpt'
             });
-
-        } catch (openaiError) {
+            } catch (openaiError) {
+                console.error('OpenAI API Error:', openaiError);
+                // Fall through to fallback response
+            }
+        }
+        
+        // Fallback response (used when OpenAI is not available or fails)
+        {
             console.error('OpenAI API Error:', openaiError);
             
             // Fallback response if OpenAI fails

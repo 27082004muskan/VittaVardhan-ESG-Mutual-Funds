@@ -1,10 +1,9 @@
 import { useEffect, useState, useCallback } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import {  useLocation } from 'react-router-dom';
 import { FaCoins, FaGift, FaQuestionCircle, FaLeaf, FaRupeeSign, FaTv, FaCreditCard, FaStar, FaTimes, FaCheckCircle, FaSpinner } from 'react-icons/fa';
 import { QRCodeSVG } from 'qrcode.react';
 
 const RewardsPage = () => {
-  const navigate = useNavigate();
   const location = useLocation();
   const [coins, setCoins] = useState(0);
   const [showQRModal, setShowQRModal] = useState(false);
@@ -26,7 +25,9 @@ const RewardsPage = () => {
           setCoins(data.coins || 0);
           return;
         }
-      } catch {}
+      } catch (error) {
+        console.error('Error fetching coins:', error);
+      }
     }
     const stored = parseInt(localStorage.getItem('greenCoins') || '0', 10);
     setCoins(isNaN(stored) ? 0 : stored);
@@ -115,6 +116,7 @@ const RewardsPage = () => {
             setRemainingCoins(updated);
             setCoins(updated);
           }
+        // eslint-disable-next-line no-unused-vars
         } catch (apiError) {
           // Fallback to localStorage
           const current = parseInt(localStorage.getItem('greenCoins') || '0', 10) || 0;
@@ -180,9 +182,9 @@ const RewardsPage = () => {
             Invest in ESG mutual funds and earn GreenCoins to unlock amazing rewards! Redeem for cashback, subscription vouchers (JioCinema/Hotstar), premium features, and gift cards from Amazon, Flipkart, and more.
           </p>
           <div className="flex flex-wrap justify-center gap-4 mb-6">
-            <span className="bg-green-700 px-4 py-2 rounded-lg text-sm font-semibold">💰 Cashback up to ₹500</span>
-            <span className="bg-green-700 px-4 py-2 rounded-lg text-sm font-semibold">📺 Entertainment Subscriptions</span>
-            <span className="bg-green-700 px-4 py-2 rounded-lg text-sm font-semibold">🎁 Gift Cards</span>
+            <span className="bg-green-700 px-4 py-2 rounded-lg text-sm font-semibold"> Cashback up to ₹500</span>
+            <span className="bg-green-700 px-4 py-2 rounded-lg text-sm font-semibold"> Entertainment Subscriptions</span>
+            <span className="bg-green-700 px-4 py-2 rounded-lg text-sm font-semibold"> Gift Cards</span>
           </div>
           <button
             // onClick={() => navigate('/green-funds')}

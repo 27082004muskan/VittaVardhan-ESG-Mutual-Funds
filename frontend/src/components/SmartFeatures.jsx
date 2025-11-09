@@ -146,9 +146,19 @@ const BrokerChatbot = () => {
 
       if (data.success) {
         const result = data.data;
+        const input = result.input;
+        const results = result.results;
+        const monthlyStr = input.monthlyAmount.toLocaleString();
+        const timePeriodStr = input.timePeriod;
+        const expectedReturnStr = input.expectedReturn;
+        const maturityStr = results.maturityAmount.toLocaleString();
+        const investedStr = results.totalInvestment.toLocaleString();
+        const gainsStr = results.totalGains.toLocaleString();
+        const returnStr = results.absoluteReturn;
+        const brokerageStr = results.brokerageSaved.toLocaleString();
         const sipMessage = {
           id: messages.length + 1,
-          text: `💰 SIP Calculation Results:\n\n📊 Monthly Investment: ₹${result.input.monthlyAmount.toLocaleString()}\n⏱️ Duration: ${result.input.timePeriod} years\n📈 Expected Return: ${result.input.expectedReturn}% per annum\n\n✨ Maturity Amount: ₹${result.results.maturityAmount.toLocaleString()}\n💵 Total Invested: ₹${result.results.totalInvestment.toLocaleString()}\n📊 Total Gains: ₹${result.results.totalGains.toLocaleString()}\n🎯 Absolute Return: ${result.results.absoluteReturn}%\n🔥 Brokerage Saved (Zero Brokerage): ₹${result.results.brokerageSaved.toLocaleString()}\n\n💡 With VittaVardhan's zero brokerage, you save ₹${result.results.brokerageSaved.toLocaleString()} compared to traditional brokers!`,
+          text: `💰 SIP Calculation Results:\n\n📊 Monthly Investment: ₹${monthlyStr}\n⏱️ Duration: ${timePeriodStr} years\n📈 Expected Return: ${expectedReturnStr}% per annum\n\n✨ Maturity Amount: ₹${maturityStr}\n💵 Total Invested: ₹${investedStr}\n📊 Total Gains: ₹${gainsStr}\n🎯 Absolute Return: ${returnStr}%\n🔥 Brokerage Saved (Zero Brokerage): ₹${brokerageStr}\n\n💡 With VittaVardhan's zero brokerage, you save ₹${brokerageStr} compared to traditional brokers!`,
           sender: 'ai',
           timestamp: new Date(),
           isCalculation: true
@@ -169,10 +179,16 @@ const BrokerChatbot = () => {
       const invested = monthly * months;
       const gains = maturity - invested;
       const brokerageSaved = months * 20; // ₹20 per transaction per month
+      const monthlyStr = monthly.toLocaleString();
+      const maturityStr = Math.round(maturity).toLocaleString();
+      const investedStr = invested.toLocaleString();
+      const gainsStr = Math.round(gains).toLocaleString();
+      const returnPercent = ((gains / invested) * 100).toFixed(2);
+      const brokerageStr = brokerageSaved.toLocaleString();
 
       const sipMessage = {
         id: messages.length + 1,
-        text: `💰 SIP Calculation Results (Local Calculation):\n\n📊 Monthly Investment: ₹${monthly.toLocaleString()}\n⏱️ Duration: ${timePeriod} years\n📈 Expected Return: ${expectedReturn}% per annum\n\n✨ Maturity Amount: ₹${Math.round(maturity).toLocaleString()}\n💵 Total Invested: ₹${invested.toLocaleString()}\n📊 Total Gains: ₹${Math.round(gains).toLocaleString()}\n🎯 Absolute Return: ${((gains / invested) * 100).toFixed(2)}%\n🔥 Brokerage Saved (Zero Brokerage): ₹${brokerageSaved.toLocaleString()}\n\n💡 Note: Backend server may not be running. Using local calculation.`,
+        text: `💰 SIP Calculation Results (Local Calculation):\n\n📊 Monthly Investment: ₹${monthlyStr}\n⏱️ Duration: ${timePeriod} years\n📈 Expected Return: ${expectedReturn}% per annum\n\n✨ Maturity Amount: ₹${maturityStr}\n💵 Total Invested: ₹${investedStr}\n📊 Total Gains: ₹${gainsStr}\n🎯 Absolute Return: ${returnPercent}%\n🔥 Brokerage Saved (Zero Brokerage): ₹${brokerageStr}\n\n💡 Note: Backend server may not be running. Using local calculation.`,
         sender: 'ai',
         timestamp: new Date(),
         isCalculation: true
@@ -237,13 +253,7 @@ const BrokerChatbot = () => {
               {messages.map((message) => (
                 <div key={message.id} className="animate-fadeIn">
                   <div className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-xl ${
-                      message.sender === 'user'
-                        ? 'bg-gradient-to-br from-emerald-500 to-green-600 text-white'
-                        : message.isCalculation
-                        ? 'bg-gradient-to-br from-blue-900/80 to-blue-800/80 text-blue-100 border border-blue-600/50'
-                        : 'bg-gray-800/80 backdrop-blur text-gray-100 border border-gray-700/50'
-                    } px-5 py-3 rounded-2xl shadow-lg`}>
+                    <div className={`max-w-xl ${message.sender === 'user' ? 'bg-gradient-to-br from-emerald-500 to-green-600 text-white' : message.isCalculation ? 'bg-gradient-to-br from-blue-900/80 to-blue-800/80 text-blue-100 border border-blue-600/50' : 'bg-gray-800/80 backdrop-blur text-gray-100 border border-gray-700/50'} px-5 py-3 rounded-2xl shadow-lg`}>
                       <p className="leading-relaxed whitespace-pre-line">{message.text}</p>
                       <p className="text-xs mt-2 opacity-70">
                         {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -258,9 +268,7 @@ const BrokerChatbot = () => {
                         <button
                           key={idx}
                           onClick={() => setInputMessage(suggestion)}
-                          className="px-4 py-2 text-sm bg-gray-800/60 backdrop-blur hover:bg-emerald-600 
-                                   text-gray-300 hover:text-white rounded-full border border-gray-600/50
-                                   hover:border-emerald-500 transition-all duration-300 hover:scale-105"
+                          className="px-4 py-2 text-sm bg-gray-800/60 backdrop-blur hover:bg-emerald-600 text-gray-300 hover:text-white rounded-full border border-gray-600/50 hover:border-emerald-500 transition-all duration-300 hover:scale-105"
                         >
                           {suggestion}
                         </button>
@@ -445,7 +453,7 @@ const BrokerChatbot = () => {
         </div>
       )}
 
-      <style jsx>{`
+      <style>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(10px); }
           to { opacity: 1; transform: translateY(0); }

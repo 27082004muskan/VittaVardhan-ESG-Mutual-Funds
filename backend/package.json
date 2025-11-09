@@ -23,12 +23,8 @@
     "express-validator": "^7.3.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.19.3",
-<<<<<<< HEAD
-    "multer": "^2.0.2"
-=======
     "multer": "^2.0.2",
     "openai": "^6.8.1"
->>>>>>> e84896a9bf3bff5c80aa7f64fb4a51b29cad535e
   },
   "devDependencies": {
     "concurrently": "^9.2.1",
