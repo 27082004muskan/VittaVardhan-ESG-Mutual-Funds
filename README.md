@@ -11,7 +11,7 @@ Picture this: you want to invest your money, but you also care about the planet.
 
 This is the reality for millions of young investors today. The financial industry continues contributing to environmental challenges because people simply don't have access to reliable, transparent information about sustainable investments. We're caught between wanting to grow our wealth and wanting to protect the world we live in—and nobody's making it easy to do both.
 
-## 💡 Our Solution
+##  Our Solution
 
 VittaVardhan is your bridge between profit and purpose. Think of it as your personal guide to sustainable investing, built specifically for people who want their money to work for them *and* for the planet.
 
