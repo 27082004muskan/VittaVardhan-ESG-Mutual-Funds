@@ -36,6 +36,35 @@ router.post('/award', protect, async (req, res) => {
   }
 });
 
+// POST /api/coins/redeem - deduct coins from current user
+// body: { coins: number }
+router.post('/redeem', protect, async (req, res) => {
+  try {
+    const coinsToDeduct = parseInt(req.body.coins, 10);
+    if (isNaN(coinsToDeduct) || coinsToDeduct <= 0) {
+      return res.status(400).json({ success: false, message: 'Invalid coin amount' });
+    }
+
+    const user = await User.findById(req.user._id).select('coins');
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    if (user.coins < coinsToDeduct) {
+      return res.status(400).json({ success: false, message: 'Insufficient coins' });
+    }
+
+    const updated = await User.findByIdAndUpdate(
+      req.user._id,
+      { $inc: { coins: -coinsToDeduct } },
+      { new: true, select: 'coins' }
+    );
+    res.json({ success: true, coinsDeducted: coinsToDeduct, remainingCoins: updated.coins });
+  } catch (e) {
+    res.status(500).json({ success: false, message: 'Failed to redeem coins' });
+  }
+});
+
 module.exports = router;
 
 

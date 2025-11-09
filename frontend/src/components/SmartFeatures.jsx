@@ -14,6 +14,7 @@ const BrokerChatbot = () => {
   const [inputMessage, setInputMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [showSIPModal, setShowSIPModal] = useState(false);
+  const [sipLoading, setSipLoading] = useState(false);
   const [sipData, setSipData] = useState({ monthlyAmount: '', expectedReturn: '12', timePeriod: '' });
   const messagesEndRef = useRef(null);
 
@@ -53,6 +54,10 @@ const BrokerChatbot = () => {
         })
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
 
       if (data.success) {
@@ -65,17 +70,24 @@ const BrokerChatbot = () => {
         };
         setMessages(prev => [...prev, aiMessage]);
       } else {
-        throw new Error('API Error');
+        throw new Error(data.error || 'API returned unsuccessful response');
       }
     } catch (error) {
-      console.error('Error:', error);
-      // Fallback message
+      console.error('Chat API Error:', error);
+      console.error('Error details:', error.message);
+      
+      // More helpful error message
+      const errorMessage = error.message.includes('Failed to fetch') || error.message.includes('NetworkError')
+        ? "Unable to connect to the server. Please make sure the backend server is running on port 5001."
+        : `Error: ${error.message}. Please try again or contact support.`;
+      
+      // Fallback message with error info in console
       const aiMessage = {
         id: messages.length + 2,
-        text: "I understand you're interested in sustainable investing. Our platform offers zero brokerage on all ESG funds, helping you save more while investing responsibly. Would you like to explore specific ESG funds or calculate your SIP returns?",
+        text: errorMessage,
         sender: 'ai',
         timestamp: new Date(),
-        suggestions: ["Show ESG funds", "Calculate SIP", "Compare returns"]
+        suggestions: ["Try again", "Check server connection", "Contact support"]
       };
       setMessages(prev => [...prev, aiMessage]);
     } finally {
@@ -83,13 +95,34 @@ const BrokerChatbot = () => {
     }
   };
 
-  // ✅ ONLY CHANGED THIS FUNCTION - Backend SIP API Call
+  // ✅ SIP Calculator with better validation and error handling
   const calculateSIP = async () => {
     const monthly = parseFloat(sipData.monthlyAmount);
     const expectedReturn = parseFloat(sipData.expectedReturn);
     const timePeriod = parseFloat(sipData.timePeriod);
     
-    if (!monthly || !expectedReturn || !timePeriod) return;
+    // Validate inputs
+    if (!sipData.monthlyAmount || !sipData.expectedReturn || !sipData.timePeriod) {
+      alert('Please fill in all fields before calculating.');
+      return;
+    }
+    
+    if (isNaN(monthly) || monthly <= 0) {
+      alert('Please enter a valid monthly investment amount.');
+      return;
+    }
+    
+    if (isNaN(expectedReturn) || expectedReturn <= 0 || expectedReturn > 100) {
+      alert('Please enter a valid expected return percentage (0-100).');
+      return;
+    }
+    
+    if (isNaN(timePeriod) || timePeriod <= 0) {
+      alert('Please enter a valid investment period in years.');
+      return;
+    }
+
+    setSipLoading(true);
 
     try {
       // Real API call to your backend
@@ -105,43 +138,51 @@ const BrokerChatbot = () => {
         })
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
 
       if (data.success) {
         const result = data.data;
         const sipMessage = {
           id: messages.length + 1,
-          text: `💰 SIP Results:\n\n📊 Monthly Investment: ₹${result.input.monthlyAmount.toLocaleString()}\n⏱️ Duration: ${result.input.timePeriod} years\n\n✨ Maturity Amount: ₹${result.results.maturityAmount.toLocaleString()}\n💵 Total Invested: ₹${result.results.totalInvestment.toLocaleString()}\n📈 Total Gains: ₹${result.results.totalGains.toLocaleString()}\n🎯 Absolute Return: ${result.results.absoluteReturn}%\n🔥 Brokerage Saved: ₹${result.results.brokerageSaved.toLocaleString()}`,
+          text: `💰 SIP Calculation Results:\n\n📊 Monthly Investment: ₹${result.input.monthlyAmount.toLocaleString()}\n⏱️ Duration: ${result.input.timePeriod} years\n📈 Expected Return: ${result.input.expectedReturn}% per annum\n\n✨ Maturity Amount: ₹${result.results.maturityAmount.toLocaleString()}\n💵 Total Invested: ₹${result.results.totalInvestment.toLocaleString()}\n📊 Total Gains: ₹${result.results.totalGains.toLocaleString()}\n🎯 Absolute Return: ${result.results.absoluteReturn}%\n🔥 Brokerage Saved (Zero Brokerage): ₹${result.results.brokerageSaved.toLocaleString()}\n\n💡 With VittaVardhan's zero brokerage, you save ₹${result.results.brokerageSaved.toLocaleString()} compared to traditional brokers!`,
           sender: 'ai',
           timestamp: new Date(),
           isCalculation: true
         };
         setMessages(prev => [...prev, sipMessage]);
+        setShowSIPModal(false);
+        setSipData({ monthlyAmount: '', expectedReturn: '12', timePeriod: '' });
       } else {
-        throw new Error('SIP calculation failed');
+        throw new Error(data.error || 'SIP calculation failed');
       }
     } catch (error) {
       console.error('SIP Error:', error);
-      // Fallback calculation (your original code)
+      
+      // Fallback calculation if API fails
       const rate = expectedReturn / 100 / 12;
       const months = timePeriod * 12;
       const maturity = monthly * (((Math.pow(1 + rate, months) - 1) / rate) * (1 + rate));
       const invested = monthly * months;
       const gains = maturity - invested;
-      const brokerageSaved = invested * 0.02;
+      const brokerageSaved = months * 20; // ₹20 per transaction per month
 
       const sipMessage = {
         id: messages.length + 1,
-        text: `💰 SIP Results:\n\n📊 Monthly Investment: ₹${monthly.toLocaleString()}\n⏱️ Duration: ${timePeriod} years\n\n✨ Maturity Amount: ₹${Math.round(maturity).toLocaleString()}\n💵 Total Invested: ₹${invested.toLocaleString()}\n📈 Total Gains: ₹${Math.round(gains).toLocaleString()}\n🎯 Brokerage Saved: ₹${Math.round(brokerageSaved).toLocaleString()}`,
+        text: `💰 SIP Calculation Results (Local Calculation):\n\n📊 Monthly Investment: ₹${monthly.toLocaleString()}\n⏱️ Duration: ${timePeriod} years\n📈 Expected Return: ${expectedReturn}% per annum\n\n✨ Maturity Amount: ₹${Math.round(maturity).toLocaleString()}\n💵 Total Invested: ₹${invested.toLocaleString()}\n📊 Total Gains: ₹${Math.round(gains).toLocaleString()}\n🎯 Absolute Return: ${((gains / invested) * 100).toFixed(2)}%\n🔥 Brokerage Saved (Zero Brokerage): ₹${brokerageSaved.toLocaleString()}\n\n💡 Note: Backend server may not be running. Using local calculation.`,
         sender: 'ai',
         timestamp: new Date(),
         isCalculation: true
       };
       setMessages(prev => [...prev, sipMessage]);
+      setShowSIPModal(false);
+      setSipData({ monthlyAmount: '', expectedReturn: '12', timePeriod: '' });
+    } finally {
+      setSipLoading(false);
     }
-
-    setShowSIPModal(false);
-    setSipData({ monthlyAmount: '', expectedReturn: '12', timePeriod: '' });
   };
 
   // ✅ NO CHANGES - Your original quickActions
@@ -316,8 +357,9 @@ const BrokerChatbot = () => {
                 SIP Calculator
               </h3>
               <button
-                onClick={() => setShowSIPModal(false)}
-                className="text-gray-400 hover:text-white transition-colors p-1"
+                onClick={() => !sipLoading && setShowSIPModal(false)}
+                disabled={sipLoading}
+                className="text-gray-400 hover:text-white transition-colors p-1 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -370,18 +412,33 @@ const BrokerChatbot = () => {
             <div className="flex space-x-3 mt-6">
               <button
                 onClick={() => setShowSIPModal(false)}
+                disabled={sipLoading}
                 className="flex-1 px-6 py-3 border border-gray-600 text-gray-300 rounded-xl 
-                         hover:bg-gray-800 transition-all duration-300"
+                         hover:bg-gray-800 transition-all duration-300
+                         disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </button>
               <button
                 onClick={calculateSIP}
+                disabled={sipLoading}
                 className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-green-600 
                          hover:from-emerald-600 hover:to-green-700 text-white rounded-xl 
-                         transition-all duration-300 font-medium shadow-lg hover:scale-105"
+                         transition-all duration-300 font-medium shadow-lg hover:scale-105
+                         disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100
+                         flex items-center justify-center"
               >
-                Calculate
+                {sipLoading ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Calculating...
+                  </>
+                ) : (
+                  'Calculate'
+                )}
               </button>
             </div>
           </div>

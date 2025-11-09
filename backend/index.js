@@ -102,6 +102,13 @@ app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/coins', coinRoutes);
 
+<<<<<<< HEAD
+=======
+// Mount chat routes
+const chatRoutes = require('./routes/chatRoutes');
+app.use('/api/chat', chatRoutes);
+
+>>>>>>> e84896a9bf3bff5c80aa7f64fb4a51b29cad535e
 // Global error handler
 app.use((err, req, res, next) => {
   console.error('Global error:', err);
