@@ -86,13 +86,6 @@ This is just the beginning. Here's where we're headed:
 The goal? Make sustainable investing so easy, so transparent, and so rewarding that it becomes the default choice, not the alternative.
 
 
-##  The Team Behind VittaVardhan
-
-**Team FemmeForge**
-- Muskan Gupta
-- Nandini Kataria
-- Shreya Agarwal
-
 Three minds, one mission: making finance greener, one investment at a time.
 
 
