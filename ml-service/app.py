@@ -161,23 +161,57 @@ def _to_recommendations(req: RecommendRequest, top_k: int = 10) -> List[Dict[str
     personalized = BASE_RANKED.copy()
     boost = np.zeros(len(personalized))
 
-    # Risk-based: lower risk -> prefer lower absolute model scores (proxy for lower exposure)
+    # Normalize base score so profile signals have stronger impact
+    score_std = np.std(personalized["AELM_score"]) + 1e-8
+    score_norm = (personalized["AELM_score"] - np.mean(personalized["AELM_score"])) / score_std
+
+    # Risk-based weighting (stronger than before)
     if req.riskProfile.lower() == "low":
-        boost -= np.abs(personalized["AELM_score"]) * 0.15
+        boost -= np.abs(score_norm) * 0.55
     elif req.riskProfile.lower() == "high":
-        boost += np.abs(personalized["AELM_score"]) * 0.15
+        boost += np.abs(score_norm) * 0.55
+    else:  # moderate
+        boost += np.abs(score_norm) * 0.10
 
-    # Horizon-based
+    # Horizon-based weighting
     if req.investmentHorizonYears >= 7:
-        boost += np.abs(personalized["AELM_score"]) * 0.08
+        boost += np.abs(score_norm) * 0.30
     elif req.investmentHorizonYears <= 3:
-        boost -= np.abs(personalized["AELM_score"]) * 0.08
+        boost -= np.abs(score_norm) * 0.30
 
-    # Investment capacity modifier
+    # Age + income + investment capacity modifiers
+    if req.age <= 30:
+        boost += np.abs(score_norm) * 0.18
+    elif req.age >= 50:
+        boost -= np.abs(score_norm) * 0.18
+
+    invest_ratio = req.monthlyInvestment / max(req.monthlyIncome, 1.0)
+    if invest_ratio >= 0.35:
+        boost += 0.08
+    elif invest_ratio <= 0.08:
+        boost -= 0.05
+
     if req.monthlyInvestment >= 15000:
-        boost += 0.03
+        boost += 0.10
     elif req.monthlyInvestment < 3000:
-        boost -= 0.03
+        boost -= 0.08
+
+    # Goal preferences
+    goal = (req.goal or "").lower()
+    if goal in {"retirement", "child_education", "wealth_creation"}:
+        boost += np.abs(score_norm) * 0.12
+    elif goal in {"tax_saving", "house_purchase"}:
+        boost -= np.abs(score_norm) * 0.06
+
+    # Deterministic profile-specific diversification:
+    # ensures different users don't get identical top-N every time.
+    profile_key = (
+        f"{req.age}|{req.monthlyIncome}|{req.monthlyInvestment}|"
+        f"{req.riskProfile}|{req.investmentHorizonYears}|{req.goal}"
+    )
+    profile_seed = abs(hash(profile_key)) % (2**32)
+    rng = np.random.default_rng(profile_seed)
+    boost += rng.normal(0, 0.02, len(personalized))
 
     personalized["final_score"] = personalized["AELM_score"] + boost
     top = personalized.sort_values("final_score", ascending=False).head(top_k)
