@@ -6,11 +6,8 @@ const OpenAI = require('openai');
 function cleanModelOutput(text) {
   if (!text) return '';
   let cleaned = String(text);
-  // Remove any chain-of-thought blocks like <think> ... </think>,
-  // and if the model forgets to close </think>, drop everything after <think>.
-  cleaned = cleaned.replace(/<think>[\s\S]*?(<\/think>|$)/gi, '');
-  // Also strip any leading "Thought:" or similar meta lines if present
-  cleaned = cleaned.replace(/^Thought:.*$/gmi, '');
+  // Remove any chain-of-thought blocks like <think> ... </think>
+  cleaned = cleaned.replace(/<think>[\s\S]*?<\/think>/gi, '');
   return cleaned.trim();
 }
 
