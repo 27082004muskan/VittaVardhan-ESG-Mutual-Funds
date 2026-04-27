@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaLeaf, FaMoneyBillWave, FaNewspaper, FaUsers, FaCalculator, FaGavel, FaBars, FaTimes } from "react-icons/fa";
+import { FaLeaf, FaMoneyBillWave, FaNewspaper, FaUsers, FaCalculator, FaGavel, FaBars, FaTimes, FaChartLine } from "react-icons/fa";
 import { useAuth } from '../hooks/useAuth';
 import { Toaster } from 'react-hot-toast';
 import ImpactCalculator from "./ImpactCalculator";
@@ -12,11 +12,13 @@ import PlanMaker from "./ESGInvestmentPlanMaker";
 import SmartFeatures from "./SmartFeatures";
 import ProfileButton from "./ProfileButton";
 import ProfilePage from './ProfilePage'; // Add this import
+import MutualFundRecommendation from "./MutualFundRecommendation";
 
 const features = [
   { name: "ESG Investment Guide", icon: <FaLeaf />, component: <ESGEducation /> },
   { name: "Green Mutual Fund", icon: <FaGavel />, component: <GreenFundSearch /> },
   { name: "Smart Features", icon: <FaLeaf />, component: <SmartFeatures /> },
+  { name: "Mutual Fund Recommendation", icon: <FaChartLine />, component: <MutualFundRecommendation /> },
   { name: "ESG Funds Explorer", icon: <FaMoneyBillWave />, component: <GreenMutualFund /> },
   { name: "Impact Calculator", icon: <FaCalculator />, component: <ImpactCalculator /> },
   { name: "ESG Investment Plan Maker", icon: <FaCalculator />, component: <PlanMaker /> },

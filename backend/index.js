@@ -8,6 +8,7 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profile');
 const coinRoutes = require('./routes/coins');
+const mutualFundRecommendationRoutes = require('./routes/mutualFundRecommendation');
 // Load environment variables
 dotenv.config();
 
@@ -101,6 +102,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/coins', coinRoutes);
+app.use('/api/mutual-fund', mutualFundRecommendationRoutes);
 
 // Mount chat routes
 const chatRoutes = require('./routes/chatRoutes');
